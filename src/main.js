@@ -32,13 +32,38 @@ document.addEventListener("DOMContentLoaded", () => {
         createAccountForm.classList.add("form--hidden");
     });
 
-    loginForm.addEventListener("submit", e => {
-        e.preventDefault();
+   loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        // Perform your AJAX/Fetch login
+    const username = loginForm.querySelector("#loginUsername").value;
+    const password = loginForm.querySelector("#loginPassword").value;
 
-        setFormMessage(loginForm, "error", "Invalid username/password combination");
-    });
+    try {
+        const response = await fetch("your_server_endpoint_here", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Login successful, handle accordingly
+            setFormMessage(loginForm, "success", "Login successful");
+        } else {
+            // Login failed, display error message
+            setFormMessage(loginForm, "error", "Invalid username/password combination");
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        setFormMessage(loginForm, "error", "An unexpected error occurred");
+    }
+});
 
     document.querySelectorAll(".form__input").forEach(inputElement => {
         inputElement.addEventListener("blur", e => {
